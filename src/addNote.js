@@ -1,0 +1,22 @@
+import React from 'react'
+
+class addNote extends React.Component {
+  render() {
+    return (
+      <form action="">
+        <input type="text" name="title" />
+        <input type="text" name="content" id="" />
+        <button type="submit">Create Note</button>
+        <select name="" id="" class="folders">
+          <option value="" class="folder_select"></option>
+          <option value="" class="folder_select"></option>
+          <option value="" class="folder_select"></option>
+          <option value="" class="folder_select"></option>
+          <option value="" class="folder_select"></option>
+        </select>
+      </form>
+    )
+  }
+}
+
+export default addNote

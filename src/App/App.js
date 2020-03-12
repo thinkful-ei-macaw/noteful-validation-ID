@@ -9,6 +9,9 @@ import dummyStore from '../dummy-store';
 import { getNotesForFolder, findNote, findFolder } from '../notes-helpers';
 import './App.css';
 import NotefulContext from './NotefulContext';
+import AddNote from '../addNote'
+import AddFolder from '../AddFolder'
+import cuid from 'cuid'
 
 class App extends Component {
     state = {
@@ -47,6 +50,21 @@ class App extends Component {
         });
     };
 
+    handleAddFolder = (name) => {
+
+        fetch('http://localhost:9090/folders', {
+            method: 'POST',
+            body: `{name: ${name}, id: ${cuid()}}`,
+            header: {
+                'content-type': 'application/json'
+            }
+        })
+        this.setState({
+            folders: [...this.state.folders, { id: cuid(), name: name }]
+        })
+        console.log(this.state.folders)
+    }
+
     renderNavRoutes() {
         const { notes, folders } = this.state;
         const contextValue = { notes: this.state.notes, folders: this.state.folders, handleDelete: this.handleDelete }
@@ -77,6 +95,7 @@ class App extends Component {
                 />
                 <Route path="/add-folder" component={NotePageNav} />
                 <Route path="/add-note" component={NotePageNav} />
+
             </NotefulContext.Provider>
         );
     }
@@ -115,6 +134,15 @@ class App extends Component {
                         return <NotePageMain {...routeProps} note={note} />;
                     }}
                 />
+                <Route path="/addNote"
+                    render={routeProps => {
+                        return <AddNote />
+                    }}
+                />
+                <Route path="/AddFolder"
+                    render={routeprops => {
+                        return <AddFolder handleAddFolder={this.handleAddFolder} />
+                    }} />
             </NotefulContext.Provider>
         );
     }
@@ -130,6 +158,8 @@ class App extends Component {
                     </h1>
                 </header>
                 <main className="App__main">{this.renderMainRoutes()}</main>
+
+
             </div>
         );
     }
