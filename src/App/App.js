@@ -25,7 +25,7 @@ class App extends Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({
-                    "folders": data
+                    folders: data
                 })
             })
 
@@ -54,8 +54,8 @@ class App extends Component {
 
         fetch('http://localhost:9090/folders', {
             method: 'POST',
-            body: `{name: ${name}, id: ${cuid()}}`,
-            header: {
+            body: JSON.stringify({ name: name }),
+            headers: {
                 'content-type': 'application/json'
             }
         })
