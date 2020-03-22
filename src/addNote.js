@@ -1,9 +1,8 @@
-import React from 'react'
-import NotefulContext from './App/NotefulContext'
+import React from "react";
+import NotefulContext from "./App/NotefulContext";
 import ValidationError from "./ValidationError";
-
+import { withRouter } from "react-router";
 class addNote extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -23,7 +22,7 @@ class addNote extends React.Component {
   }
 
   updateContent(content) {
-    this.setState({ content: { value: content, touched: true } })
+    this.setState({ content: { value: content, touched: true } });
   }
 
   validateName() {
@@ -38,64 +37,80 @@ class addNote extends React.Component {
   validateContent() {
     const content = this.state.content.value.trim();
     if (content.length === 0) {
-      return "content is a required field"
+      return "content is a required field";
+    }
+  }
+
+  submitSwitch() {
+    if (this.validateName() || this.validateContent()) {
+      console.log("disabled");
+      return (
+        <button type="submit" disabled>
+          Create Note
+        </button>
+      );
+    } else {
+      console.log("enabled");
+      return <button type="submit">Create Note</button>;
     }
   }
   render() {
     const nameError = this.validateName();
     const contentError = this.validateContent();
+    const submit = this.submitSwitch();
     return (
       <NotefulContext.Consumer>
-
-        {(value) => {
-
-
+        {value => {
           return (
-
-            < form action=""
+            <form
+              action=""
               onSubmit={e => {
                 e.preventDefault();
-                value.handleAddNote(e.target.title.value, e.target.folders.value, e.target.content.value);
-              }
-              }>
+                value.handleAddNote(
+                  e.target.title.value,
+                  e.target.folders.value,
+                  e.target.content.value
+                );
+                this.props.history.push("/");
+              }}
+            >
               <label for="title">Name of Note</label>
               <input
                 defaultValue="your name here"
-                onChange={
-                  e => this.updateName(e.target.value)
-                } type="text"
+                onChange={e => this.updateName(e.target.value)}
+                type="text"
                 name="title"
               />
-              {
-                this.state.name.touched &&
-                <ValidationError
-                  message={nameError} />
-              }
+              {this.state.name.touched && (
+                <ValidationError message={nameError} />
+              )}
               <label for="content">Content of Note</label>
               <input
                 defaultValue="your content here"
                 type="text"
                 name="content"
                 id=""
-                onChange={
-                  e => this.updateContent(e.target.value)
-                }
+                onChange={e => this.updateContent(e.target.value)}
               />
-              {this.state.content.touched && <ValidationError
-                message={contentError} />}
-              <button type="submit">Create Note</button>
-              <select name="folders" id="" class="folders" >
+              {this.state.content.touched && (
+                <ValidationError message={contentError} />
+              )}
+              {submit}
+              <select name="folders" id="" class="folders">
                 {value.folders.map(folder => {
-                  return <option name={folder.name} value={folder.id}>{folder.name}</option>
+                  return (
+                    <option name={folder.name} value={folder.id}>
+                      {folder.name}
+                    </option>
+                  );
                 })}
               </select>
-            </form >
-
-          )
+            </form>
+          );
         }}
       </NotefulContext.Consumer>
-    )
+    );
   }
 }
 
-export default addNote
+export default withRouter(addNote);
